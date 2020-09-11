@@ -1,0 +1,11 @@
+<h1><%= current_user.name %></h1>
+
+<% if @subscribed %>
+　　<p>チャンネル登録しています！</p>
+<% else %>
+    <p>チャンネル登録しませんか？</p>
+<% end %>
+
+<%= render partial: 'user_playlist', collection: @user_playlists %>
+
+<%= render partial: 'channel_movie', collection: @channel_movies %>
