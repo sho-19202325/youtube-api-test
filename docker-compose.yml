@@ -1,0 +1,35 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: containers/rails/Dockerfile
+    command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+    env_file:
+      - "./.env.dev"
+    volumes:
+      - .:/webapp:cached
+      - public-data:/webapp/public
+      - tmp-data:/webapp/tmp
+      - log-data:/webapp/log
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    tty: true
+    stdin_open: true
+  db:
+    image: "postgres:12.2"
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=passw0rd"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "25432:5432"
+
+volumes:
+  public-data:
+  tmp-data:
+  log-data:
+  db-data:
