@@ -1,0 +1,17 @@
+<tr>
+	<% if playlist_item_counter == 0 %>
+		<td style="border-bottom: 0;">
+			<%= playlist_title %>
+		</td>
+	<% else %>
+		<td style="border: 0;">
+			</td>
+	<% end %>
+	<td>
+		<% if !playlist_item.empty? %>
+			<%= playlist_item %>
+		<% else %>
+			このプレイリストは空です。
+		<% end %>
+	</td>
+</tr>

@@ -1,2 +1,25 @@
-<p><%= channel_movie["contentDetails"] %></p>
-<p><%= image_tag(channel_movie["snippet"]["thumbnails"]["standard"]["url"]) %></p>
+<tr>
+	<td><%= channel_movie["snippet"]["title"] %></td>
+	<td>
+		<%= @user_rates[channel_movie["snippet"]["resourceId"]["videoId"]] %>
+		<% if @user_rates[channel_movie["snippet"]["resourceId"]["videoId"]] != "like" %>
+			<%= form_with url: "/user/like/#{channel_movie["snippet"]["resourceId"]["videoId"]}" do |f| %>
+				<%= f.submit "高評価ボタン" %>
+			<% end %>
+		<% end %>
+	</td>
+	<td>
+		<% if !@user_playlists.present? %>
+				このユーザーのプレイリストはありません。動画を追加したい場合はプレイリストを作成してください。						
+		<% else %>
+			<% if @user_playlist_items.values.flatten.include?(channel_movie["snippet"]["title"]) %>
+				この動画はユーザーの作成したプレイリストに追加されています。
+			<% else %>			
+				<%= form_with url: "/user/playlist_item/#{channel_movie["snippet"]["resourceId"]["videoId"]}" do |f| %>
+					<%= f.select :playlist_id, playlist_choice(@user_playlist_items, @user_playlists) %>
+					<%= f.submit "プレイリストに追加" %>
+				<% end %>			
+			<% end %>		
+		<% end %>
+	</td> 
+</tr>

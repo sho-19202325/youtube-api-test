@@ -1,11 +1,78 @@
-<h1><%= current_user.name %></h1>
-
-<% if @subscribed %>
-　　<p>チャンネル登録しています！</p>
+<% if @niziu_subscribed %>
+　　<p>Niziuの公式チャンネルを登録しています！</p>
 <% else %>
-    <p>チャンネル登録しませんか？</p>
+    <p>Niziuの公式チャンネルを登録しませんか？</p>
 <% end %>
 
-<%= render partial: 'user_playlist', collection: @user_playlists %>
+<script src="https://apis.google.com/js/platform.js"></script>
+<div class="g-ytsubscribe" data-channelid="UCHp2q2i85qt_9nn2H7AvGOw" data-layout="full" data-count="hidden"></div>
 
-<%= render partial: 'channel_movie', collection: @channel_movies %>
+<% if @jpy_subscribed %>
+　　<p>JYP Entertainmentをチャンネル登録しています！</p>
+<% else %>
+    <p>JYP Entertainmentをチャンネル登録しませんか？</p>
+<% end %>
+<script src="https://apis.google.com/js/platform.js"></script>
+<div class="g-ytsubscribe" data-channelid="UCaO6TYtlC8U5ttz62hTrZgg" data-layout="full" data-count="hidden"></div>
+
+<h2><%= current_user.name %>さんの再生リスト一覧<small>(他のユーザーの再生リストを保存しても、ここには表示されません。)</small></h2>
+<% if @user_playlists.present? %>
+    <table style="border: 1px solid black;">
+        <thead>
+            <tr>
+                <th>再生リスト名</th>
+                <th>動画名</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @user_playlist_items.each do |key, value| %>
+                <% if value.empty? %>
+                    <tr><td><%= key %></td><td>このプレイリストの中身は空です。</td></tr>
+                <% else %>
+                    <%= render partial: 'playlist_item', collection: value, locals: { playlist_title: key } %>
+                <% end %>
+            <% end %>    
+        </tbody>
+    </table>
+<% else %>
+    <h2>再生リストがありません。</h2>
+    <% if @user_channel == nil %>
+        再生リストを作成するためには、
+        <%= link_to 'こちらのページ', 'https://www.youtube.com/account' %>
+        にてご自身のチャンネルを作成する必要があります。
+    <% else %>
+        <%= form_with url: "/user/playlist/" do |f| %>
+            <%= f.label :title, "プレイリスト名:"%>
+            <%= f.text_field :title %>
+            <%= f.submit "プレイリストを作成する" %>
+        <% end %>	    
+    <% end%>
+<% end %>
+
+<h2>NiziUの公式チャンネルがアップロードした動画一覧</h2>
+<table>
+    <thead>
+        <tr>
+            <th>動画名</th>
+            <th>この動画に対するユーザーの評価</th>
+            <th>ユーザーの再生リストに含まれているかどうか</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%= render partial: 'channel_movie', collection: @niziu_channel_movies %>    
+    </tbody>
+</table>
+
+<h2>JYP Entertainmentの公式チャンネルがアップロードした動画一覧(titleにNiziuを含むもののみ)</h2>
+<table>
+    <thead>
+        <tr>
+            <th>動画名</th>
+            <th>この動画に対するユーザーの評価</th>
+            <th>ユーザーの再生リストに含まれているかどうか</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%= render partial: 'channel_movie', collection: @jyp_channel_movies %>    
+    </tbody>
+</table>

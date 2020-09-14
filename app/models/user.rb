@@ -19,6 +19,6 @@ class User < ApplicationRecord
 
   def valid_access_token?
     now = DateTime.now
-    return now.to_i - created_at.to_i <= 3600 && now.to_i - updated_at.to_i <= 3600
+    return now.to_i - created_at.to_i <= 3600 || now.to_i - updated_at.to_i <= 3600
   end
 end
